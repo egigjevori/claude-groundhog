@@ -1,0 +1,68 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck on stop-hook.sh
+        run: shellcheck scripts/stop-hook.sh
+
+      - name: Run ShellCheck on test script
+        run: shellcheck tests/test-hook.sh
+
+  test:
+    name: Hook Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/stop-hook.sh
+          chmod +x tests/test-hook.sh
+
+      - name: Run hook tests
+        run: ./tests/test-hook.sh
+
+  validate-json:
+    name: Validate JSON
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate plugin.json
+        run: jq . .claude-plugin/plugin.json > /dev/null
+
+      - name: Validate hooks.json
+        run: jq . hooks/hooks.json > /dev/null
+
+  validate-yaml-frontmatter:
+    name: Validate Command Frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check commands have description frontmatter
+        run: |
+          for file in commands/*.md; do
+            if ! head -n 5 "$file" | grep -q "^description:"; then
+              echo "ERROR: $file missing description in frontmatter"
+              exit 1
+            fi
+          done
+          echo "All commands have description frontmatter"
