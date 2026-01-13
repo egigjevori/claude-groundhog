@@ -1,0 +1,25 @@
+{
+  "name": "groundhog-marketplace",
+  "owner": {
+    "name": "egigjevori"
+  },
+  "metadata": {
+    "description": "Groundhog - Persistent iterative task loops for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "groundhog",
+      "source": "./",
+      "description": "Persistent iterative task loops for Claude Code. Define repeatable tasks in markdown files and let Claude work through them systematically.",
+      "version": "1.1.0",
+      "author": {
+        "name": "egigjevori"
+      },
+      "repository": "https://github.com/egigjevori/claude-groundhog",
+      "license": "MIT",
+      "keywords": ["loops", "automation", "tasks", "iterative", "workflow"],
+      "category": "productivity"
+    }
+  ]
+}
